@@ -500,7 +500,7 @@ En identifiant les facteurs clés de succès des campagnes précédentes, nous p
         
    with col2:
         # Chemin de l'image
-        image_path_intro = "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/intro.jpeg"
+        image_path_intro = "https://github.com/Sam-digit/bank_ML/blob/main/images/intro.jpeg"
         #Afficher l'image
         st.image(image_path_intro)
 
@@ -1577,7 +1577,7 @@ target = df['deposit']
        
        st.markdown("#### Split Train / Test")
        # Chemin de l'image
-       image_path_traintest = "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/traintest.jpg"
+       image_path_traintest = "https://github.com/Sam-digit/bank_ML/blob/main/images/traintest.jpg"
        #Afficher l'image
        st.image(image_path_traintest)
 
@@ -1611,7 +1611,7 @@ X_train.shape, X_test.shape
     with tab4:
        st.markdown("#### Démarche Pipeline")
        # Chemin de l'image
-       image_path_pipeline = "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/pipeline.jpg"
+       image_path_pipeline = "https://github.com/Sam-digit/bank_ML/blob/main/images/pipeline.jpg"
        #Afficher l'image
        st.image(image_path_pipeline)
        st.markdown("Grâce à une pipeline, nous avons pu générer rapidement 4 pre-processing différents, testés ensuite sur différents algorithmes de Machine Learning :")
@@ -1728,7 +1728,7 @@ def show_modelling_page():
         st.write("")     
         st.markdown("##### Performances")
         # Chemin de l'image
-        image_path_perf11 = "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/perf11.png"
+        image_path_perf11 = "https://github.com/Sam-digit/bank_ML/blob/main/images/perf11.png"
         #Afficher l'image
         st.image(image_path_perf11)
         st.write("")
@@ -1741,9 +1741,9 @@ def show_modelling_page():
        )
         # Définir les chemins des images
         image_paths = {
-       'Random Forest': "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/fi_rf.png",
-       'XGBoost': "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/fi_xg.png",
-       'LightGBM': "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/fi_gbm.png"
+       'Random Forest': "https://github.com/Sam-digit/bank_ML/blob/main/images/fi_rf.png",
+       'XGBoost': "https://github.com/Sam-digit/bank_ML/blob/main/images/fi_xg.png",
+       'LightGBM': "https://github.com/Sam-digit/bank_ML/blob/main/images/fi_gbm.png"
        }
         # Afficher l'image en fonction de la sélection
         st.image(image_paths[option])
@@ -1785,7 +1785,7 @@ Il apparaît donc intéressant de **tester nos modèles en supprimant cette vari
         st.divider()     
         st.markdown("##### Performances")
         # Chemin de l'image
-        image_path_perfsd = "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/perfsd.jpg"
+        image_path_perfsd = "https://github.com/Sam-digit/bank_ML/blob/main/images/perfsd.jpg"
         #Afficher l'image
         st.image(image_path_perfsd)
         st.write("")     
@@ -1808,9 +1808,9 @@ ce qui démontre le poids de cette variable dans la modélisation prédictive.
        )
         # Définir les chemins des images
         image_paths2 = {
-       'Random Forest': "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/fisd_rf.png",
-       'XGBoost': "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/fisd_xg.png",
-       'LightGBM': "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/fisd_gbm.jpg"
+       'Random Forest': "https://github.com/Sam-digit/bank_ML/blob/main/images/fisd_rf.png",
+       'XGBoost': "https://github.com/Sam-digit/bank_ML/blob/main/images/fisd_xg.png",
+       'LightGBM': "https://github.com/Sam-digit/bank_ML/blob/main/images/fisd_gbm.jpg"
        }
         # Afficher l'image en fonction de la sélection
         st.image(image_paths2[option2])
@@ -2109,7 +2109,7 @@ def show_conclusion_page():
                 """)
        with col2:
           # Chemin de l'image
-          image_path_persona = "/Users/samanthaebrard/Library/Mobile Documents/com~apple~CloudDocs/Documents/DATA_ANALYST/STREAM/projet_stream/persona.png"
+          image_path_persona = "https://github.com/Sam-digit/bank_ML/blob/main/images/persona.png"
           #Afficher l'image
           st.image(image_path_persona)      
 

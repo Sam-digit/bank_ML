@@ -2159,7 +2159,7 @@ def show_conclusion_page():
     - Complexité des hyperparamètres à régler
     - Peut être sujet au surapprentissage si mal paramétré
                        """)
-          
+            st.write("")          
           with col3 :
             st.markdown(""" **LightGBM** est un cadre de gradient boosting basé sur les arbres qui est conçu pour être distribué et efficace avec une grande capacité de données.
 - **Avantages:**

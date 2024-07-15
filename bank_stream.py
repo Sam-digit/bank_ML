@@ -2152,6 +2152,7 @@ def show_conclusion_page():
           
           with col2 :
             st.markdown(""" **XGBoost** est une implémentation de gradient boosting qui est efficace et performante pour les tâches de classification et de régression.
+            st.write("")  
 - **Avantages:**
     - Très performant pour les tâches de classification et régression
     - Efficace en termes de calcul
@@ -2159,7 +2160,7 @@ def show_conclusion_page():
     - Complexité des hyperparamètres à régler
     - Peut être sujet au surapprentissage si mal paramétré
                        """)
-            st.write("")          
+        
           with col3 :
             st.markdown(""" **LightGBM** est un cadre de gradient boosting basé sur les arbres qui est conçu pour être distribué et efficace avec une grande capacité de données.
 - **Avantages:**

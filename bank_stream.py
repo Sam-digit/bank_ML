@@ -50,8 +50,9 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 
-#FONCTIONS DATAS --------------------------------------------------------------
-#LANCEMENT DES MODELES SAUVEGARDES 
+#FONCTIONS DATAS ET RESOURCES --------------------------------------------------------------
+#LANCEMENT DES MODELES SAUVEGARDES
+@st.cache_resource
 def load_model(filename):
     """
     Charge un modèle depuis un fichier avec joblib.
@@ -287,7 +288,9 @@ def remove_duration(X_train_processed_df, X_test_processed_df):
 
     
 # Entraîner et évaluer le modèle
-def train_and_evaluate_model(model, X_train_processed, X_test_processed, y_train_processed, y_test_processed):
+@st.cache_resource
+def train_and_evaluate_model(_model, X_train_processed, X_test_processed, y_train_processed, y_test_processed):
+    model = _model  # Re-assigner _model à model pour le traitement
     model.fit(X_train_processed, y_train_processed)
     y_pred = model.predict(X_test_processed)
     
@@ -384,6 +387,7 @@ def plot_confusion_matrix(cm):
 
 
 # Affichage du rapport de classification
+@st.cache_data
 def display_classification_report(report):
     report_df = pd.DataFrame(report).transpose()
     st.write(report_df)

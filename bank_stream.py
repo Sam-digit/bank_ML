@@ -500,7 +500,7 @@ En identifiant les facteurs clés de succès des campagnes précédentes, nous p
         
    with col2:
         # Chemin de l'image
-        image_path_intro = "https://github.com/Sam-digit/bank_ML/blob/main/images/intro.jpeg"
+        image_path_intro = "https://raw.githubusercontent.com/Sam-digit/bank_ML/blob/main/images/intro.jpeg"
         #Afficher l'image
         st.image(image_path_intro)
 

@@ -2171,7 +2171,6 @@ def show_conclusion_page():
                        """)
 
        st.divider()
-       st.markdown(' ##### ***Merci de votre attention. Avez-vous des questions ?***')
 
 
 # Fonction principale pour afficher la page sélectionnée

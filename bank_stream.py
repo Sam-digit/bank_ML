@@ -2152,7 +2152,6 @@ def show_conclusion_page():
           
           with col2 :
             st.markdown(""" **XGBoost** est une implémentation de gradient boosting qui est efficace et performante pour les tâches de classification et de régression.
-            st.write("")  
 - **Avantages:**
     - Très performant pour les tâches de classification et régression
     - Efficace en termes de calcul

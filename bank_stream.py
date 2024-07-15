@@ -30,7 +30,7 @@ st. set_page_config(layout="wide")
 st.sidebar.title("Sommaire")
 pages=["Projet", "Jeu de données", "DataVizualisation", "Pre-processing","Modélisation","Conclusion"]
 page=st.sidebar.radio("Menu", pages)
-st.sidebar.title("Auteurs")
+st.sidebar.title("Equipe projet")
 st.sidebar.markdown('<a href="https://www.linkedin.com/in/elodie-barnay-henriet-916a6311a/" title="LinkedIn Elodie">Elodie Barnay henriet</a>', unsafe_allow_html=True)
 st.sidebar.markdown('<a href="https://www.linkedin.com/in/irinagrankina/" title="LinkedIn Irina">Irina Grankina</a>', unsafe_allow_html=True)
 st.sidebar.markdown('<a href="https://www.linkedin.com/in/samanthaebrard/" title="LinkedIn Samantha">Samantha Ebrard</a>', unsafe_allow_html=True)

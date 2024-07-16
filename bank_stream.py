@@ -57,7 +57,6 @@ def load_model(filename):
     """
     Charge un modèle depuis un fichier avec joblib.
     """
-    st.write(f"Chargement du modèle : {filename}")  # NEW Message de débogage
     try:
         model = joblib.load(filename)
         return model

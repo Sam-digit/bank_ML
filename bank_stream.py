@@ -288,9 +288,8 @@ def remove_duration(X_train_processed_df, X_test_processed_df):
 
     
 # Entraîner et évaluer le modèle
-@st.cache_resource
-def train_and_evaluate_model(_model, X_train_processed, X_test_processed, y_train_processed, y_test_processed):
-    model = _model  # Re-assigner _model à model pour le traitement
+#@st.cache_resource
+def train_and_evaluate_model(model, X_train_processed, X_test_processed, y_train_processed, y_test_processed):
     model.fit(X_train_processed, y_train_processed)
     y_pred = model.predict(X_test_processed)
     

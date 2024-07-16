@@ -30,7 +30,7 @@ st. set_page_config(layout="wide")
 st.sidebar.title("Sommaire")
 pages=["Projet", "Jeu de données", "DataVizualisation", "Pre-processing","Modélisation","Conclusion"]
 page=st.sidebar.radio("Menu", pages)
-st.sidebar.title("Equipe projet")
+st.sidebar.title("Auteurs")
 st.sidebar.markdown('<a href="https://www.linkedin.com/in/elodie-barnay-henriet-916a6311a/" title="LinkedIn Elodie">Elodie Barnay henriet</a>', unsafe_allow_html=True)
 st.sidebar.markdown('<a href="https://www.linkedin.com/in/irinagrankina/" title="LinkedIn Irina">Irina Grankina</a>', unsafe_allow_html=True)
 st.sidebar.markdown('<a href="https://www.linkedin.com/in/samanthaebrard/" title="LinkedIn Samantha">Samantha Ebrard</a>', unsafe_allow_html=True)
@@ -57,12 +57,25 @@ def load_model(filename):
     """
     Charge un modèle depuis un fichier avec joblib.
     """
+    st.write(f"Chargement du modèle : {filename}")  # NEW Message de débogage
     try:
         model = joblib.load(filename)
         return model
     except FileNotFoundError:
         return None
 
+# Charger les modèles une seule fois et les stocker dans st.session_state
+def initialize_models():
+    if 'model_rf' not in st.session_state:
+        st.session_state['model_rf'] = load_model('random_forest_model.pkl')
+    if 'model_xgb' not in st.session_state:
+        st.session_state['model_xgb'] = load_model('xgboost_model.pkl')
+    if 'model_lgb' not in st.session_state:
+        st.session_state['model_lgb'] = load_model('lightgbm_model.pkl')
+
+initialize_models()
+
+# Fonction pour l'initialisation des résultats
 def initialize_results():
     if 'results_rf' not in st.session_state:
         st.session_state['results_rf'] = None
@@ -74,10 +87,12 @@ def initialize_results():
 # Initialiser les résultats dans l'état de session
 initialize_results()
 
-# Charger les modèles sauvegardés
-model_rf = load_model('random_forest_model.pkl')
-model_xgb = load_model('xgboost_model.pkl')
-model_lgb = load_model('lightgbm_model.pkl')
+def save_model(model, filename):
+    """
+    Sauvegarde un modèle dans un fichier avec joblib.
+    """
+    joblib.dump(model, filename)
+
 
 #FONCTION LOAD DATA POUR LE DF
 @st.cache_data
@@ -288,7 +303,6 @@ def remove_duration(X_train_processed_df, X_test_processed_df):
 
     
 # Entraîner et évaluer le modèle
-#@st.cache_resource
 def train_and_evaluate_model(model, X_train_processed, X_test_processed, y_train_processed, y_test_processed):
     model.fit(X_train_processed, y_train_processed)
     y_pred = model.predict(X_test_processed)
@@ -324,6 +338,44 @@ def save_model(model, filename):
     Sauvegarde un modèle dans un fichier avec joblib.
     """
     joblib.dump(model, filename)
+
+#NEW ENTRAINER AVEC BEST PARAMS et SAUVEGARDER
+def train_and_evaluate_and_save(model_class, params, model_name, key):
+    # Créer une instance du modèle avec les paramètres spécifiés
+    model = model_class(**params)
+    
+    # Afficher les paramètres du modèle
+    with st.expander(f"Afficher les paramètres du modèle {model_name}"):
+        st.write(f"Modèle {model_name} créé avec les paramètres suivants :")
+        st.write(params)
+    
+    # Charger et pré-traiter les données
+    df = load_data()
+    X_train, X_test, y_train, y_test = preprocess_data(df)
+    X_train_processed_df, X_test_processed_df, y_train_processed_df, y_test_processed_df = preprocess_and_transform(X_train, X_test, y_train, y_test)
+    
+    # Enlever la colonne 'duration' des ensembles de données traitées
+    X_train_processed_df, X_test_processed_df = remove_duration(X_train_processed_df, X_test_processed_df)
+
+    # Entraîner et évaluer le modèle
+    results = train_and_evaluate_model(model, X_train_processed_df, X_test_processed_df, y_train_processed_df['Deposit'], y_test_processed_df['Deposit'])
+    
+    # Sauvegarder le modèle
+    save_model(model, f'{model_name.lower()}_model.pkl')
+    
+    # Stocker les résultats dans st.session_state
+    st.session_state[key] = results
+    
+    # Afficher les résultats
+    st.write("**Rapport de classification**")
+    display_classification_report(results['report'])
+    
+    st.write("")
+    plot_confusion_matrix(results['confusion_matrix'])
+    
+    st.write("")
+    plot_feature_importances(results['importances'], X_train_processed_df.columns)
+
 
 
 # Visualisation de la matrice de confusion
@@ -1857,8 +1909,6 @@ ce qui démontre le poids de cette variable dans la modélisation prédictive.
 
     with tab5:
         st.subheader("Modélisation finale")
-        # Charger les données
-        df = load_data()
         col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
         button5 = col1.button("Modèle Random Forest")
         button6 = col2.button("Modèle XGBoost")
@@ -1871,12 +1921,6 @@ ce qui démontre le poids de cette variable dans la modélisation prédictive.
         #Définir button5 par défaut à l'ouverture de la page
         if not button_clicked or button5:
             st.markdown("#### Modèle Random Forest")
-            # Charger et pré-traiter les données
-            df = load_data()
-            X_train, X_test, y_train, y_test = preprocess_data(df)
-            X_train_processed_df, X_test_processed_df, y_train_processed_df, y_test_processed_df = preprocess_and_transform(X_train, X_test, y_train, y_test)
-            # Enlever la colonne 'duration' des ensembles de données traitées
-            X_train_processed_df, X_test_processed_df = remove_duration(X_train_processed_df, X_test_processed_df)
     
             # Définir les hyperparamètres du modèle RandomForest
             rf_params = {
@@ -1887,43 +1931,14 @@ ce qui démontre le poids de cette variable dans la modélisation prédictive.
                 'n_estimators': 100,
                 'random_state': 42
             }
-    
-            # Créer et évaluer le modèle RandomForest
-            model_rf = RandomForestClassifier(**rf_params)
-            with st.expander("Afficher les paramètres du modèle Random Forest"):
-                st.write("Modèle Random Forest créé avec les paramètres suivants :")
-                st.write(rf_params)
-    
-            results = train_and_evaluate_model(model_rf, X_train_processed_df, X_test_processed_df, y_train_processed_df['Deposit'], y_test_processed_df['Deposit'])
+            #Appel de la fonction entrainement et sauvegarde
+            train_and_evaluate_and_save(RandomForestClassifier, rf_params, 'Random Forest', 'results_rf')
             
-            # Sauvegarder le modèle
-            save_model(model_rf, 'random_forest_model.pkl')
-
-            # Stocker les résultats dans st.session_state
-            st.session_state['results_rf'] = results
-    
-            st.write("**Rapport de classification**")
-            display_classification_report(results['report'])
-    
-            st.write("")
-            plot_confusion_matrix(results['confusion_matrix'])
-    
-            st.write("")
-            plot_feature_importances(results['importances'], X_train_processed_df.columns)
-
 
 
 
         if  button6:
             st.markdown("#### Modèle XGBoost")
-                
-            # Charger et pré-traiter les données
-            df = load_data()
-            X_train, X_test, y_train, y_test = preprocess_data(df)
-            X_train_processed_df, X_test_processed_df, y_train_processed_df, y_test_processed_df = preprocess_and_transform(X_train, X_test, y_train, y_test)
-    
-            # Enlever la colonne 'duration' des ensembles de données traitées
-            X_train_processed_df, X_test_processed_df = remove_duration(X_train_processed_df, X_test_processed_df)
     
             # Définir les hyperparamètres du modèle XGBoost
             xgb_params = {
@@ -1934,43 +1949,14 @@ ce qui démontre le poids de cette variable dans la modélisation prédictive.
                 'subsample': 0.8,
                 'random_state': 42
             }
-    
-            # Créer et évaluer le modèle XGBoost
-            model_xgb = XGBClassifier(**xgb_params, use_label_encoder=False, eval_metric='logloss')
-    
-            with st.expander("Afficher les paramètres du modèle XGBoost"):
-                st.write("Modèle XGBoost créé avec les paramètres suivants :")
-                st.write(xgb_params)
-    
-            # Utiliser la fonction générique pour entraîner et évaluer le modèle
-            results = train_and_evaluate_model(model_xgb, X_train_processed_df, X_test_processed_df, y_train_processed_df['Deposit'], y_test_processed_df['Deposit'])
 
-            # Sauvegarder le modèle
-            save_model(model_xgb, 'xgboost_model.pkl')
-
-            # Stocker les résultats dans st.session_state
-            st.session_state['results_xgb'] = results
-
-            st.write("**Rapport de classification**")
-            display_classification_report(results['report'])
-    
-            st.write("")
-            plot_confusion_matrix(results['confusion_matrix'])
-    
-            st.write("")
-            plot_feature_importances(results['importances'], X_train_processed_df.columns)
+            #Appel de la fonction entrainement et sauvegarde
+            train_and_evaluate_and_save(XGBClassifier, xgb_params, 'XGBoost', 'results_xgb')
 
 
 
         if  button7:
             st.markdown("#### Modèle LightGBM")
-            # Charger et pré-traiter les données
-            df = load_data()
-            X_train, X_test, y_train, y_test = preprocess_data(df)
-            X_train_processed_df, X_test_processed_df, y_train_processed_df, y_test_processed_df = preprocess_and_transform(X_train, X_test, y_train, y_test)
-    
-            # Enlever la colonne 'duration' des ensembles de données traitées
-            X_train_processed_df, X_test_processed_df = remove_duration(X_train_processed_df, X_test_processed_df)
     
             # Définir les hyperparamètres du modèle LightGBM
             lgb_params = {
@@ -1981,31 +1967,8 @@ ce qui démontre le poids de cette variable dans la modélisation prédictive.
                 'subsample': 0.8,
                 'random_state': 42
             }
-    
-            # Créer et évaluer le modèle LightGBM
-            model_lgb = LGBMClassifier(**lgb_params)
-    
-            with st.expander("Afficher les paramètres du modèle LightGBM"):
-                st.write("Modèle LightGBM créé avec les paramètres suivants :")
-                st.write(lgb_params)
-    
-            # Utiliser la fonction générique pour entraîner et évaluer le modèle
-            results = train_and_evaluate_model(model_lgb, X_train_processed_df, X_test_processed_df, y_train_processed_df['Deposit'], y_test_processed_df['Deposit'])
-
-            # Sauvegarder le modèle
-            save_model(model_lgb, 'lightgbm_model.pkl')
-
-            # Stocker les résultats dans st.session_state
-            st.session_state['results_lgb'] = results
-
-            st.write("**Rapport de classification**")
-            display_classification_report(results['report'])
-    
-            st.write("")
-            plot_confusion_matrix(results['confusion_matrix'])
-    
-            st.write("")
-            plot_feature_importances(results['importances'], X_train_processed_df.columns)
+            #Appel de la fonction entrainement et sauvegarde
+            train_and_evaluate_and_save(LGBMClassifier, lgb_params, 'LightGBM', 'results_lgb')
 
 
         if  button8:
@@ -2061,6 +2024,7 @@ ce qui démontre le poids de cette variable dans la modélisation prédictive.
 
             else:
                 st.write("Les résultats des modèles ne sont pas disponibles. Assurez-vous d'avoir exécuté les boutons correspondants pour entraîner et évaluer les modèles.")
+                st.divider()
             
             st.markdown("#### Interprétation des résultats")
             st.markdown("""
@@ -2158,7 +2122,7 @@ def show_conclusion_page():
     - Complexité des hyperparamètres à régler
     - Peut être sujet au surapprentissage si mal paramétré
                        """)
-        
+          
           with col3 :
             st.markdown(""" **LightGBM** est un cadre de gradient boosting basé sur les arbres qui est conçu pour être distribué et efficace avec une grande capacité de données.
 - **Avantages:**
@@ -2170,6 +2134,7 @@ def show_conclusion_page():
                        """)
 
        st.divider()
+       st.markdown(' ##### ***Merci de votre attention. Avez-vous des questions ?***')
 
 
 # Fonction principale pour afficher la page sélectionnée

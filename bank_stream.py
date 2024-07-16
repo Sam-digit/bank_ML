@@ -61,18 +61,26 @@ def load_model(filename):
         model = joblib.load(filename)
         return model
     except FileNotFoundError:
+        st.error(f"Le modèle {filename} n'a pas pu être chargé.")
         return None
 
-# Charger les modèles une seule fois et les stocker dans st.session_state
-def initialize_models():
-    if 'model_rf' not in st.session_state:
-        st.session_state['model_rf'] = load_model('random_forest_model.pkl')
-    if 'model_xgb' not in st.session_state:
-        st.session_state['model_xgb'] = load_model('xgboost_model.pkl')
-    if 'model_lgb' not in st.session_state:
-        st.session_state['model_lgb'] = load_model('lightgbm_model.pkl')
-
-initialize_models()
+# Charger les modèles au besoin
+def get_model(model_name):
+    """
+    Retourne le modèle demandé, en le chargeant si nécessaire.
+    """
+    if model_name == 'rf':
+        if 'model_rf' not in st.session_state:
+            st.session_state['model_rf'] = load_model('random_forest_model.pkl')
+        return st.session_state['model_rf']
+    elif model_name == 'xgb':
+        if 'model_xgb' not in st.session_state:
+            st.session_state['model_xgb'] = load_model('xgboost_model.pkl')
+        return st.session_state['model_xgb']
+    elif model_name == 'lgb':
+        if 'model_lgb' not in st.session_state:
+            st.session_state['model_lgb'] = load_model('lightgbm_model.pkl')
+        return st.session_state['model_lgb']
 
 # Fonction pour l'initialisation des résultats
 def initialize_results():
@@ -1930,8 +1938,9 @@ ce qui démontre le poids de cette variable dans la modélisation prédictive.
                 'n_estimators': 100,
                 'random_state': 42
             }
-            #Appel de la fonction entrainement et sauvegarde
-            train_and_evaluate_and_save(RandomForestClassifier, rf_params, 'Random Forest', 'results_rf')
+            # Utilisez get_model pour obtenir le modèle
+            model_rf = get_model('rf')
+            if model_rf is not None:train_and_evaluate_and_save(RandomForestClassifier, rf_params, 'Random Forest', 'results_rf')
             
 
 
@@ -1949,8 +1958,10 @@ ce qui démontre le poids de cette variable dans la modélisation prédictive.
                 'random_state': 42
             }
 
-            #Appel de la fonction entrainement et sauvegarde
-            train_and_evaluate_and_save(XGBClassifier, xgb_params, 'XGBoost', 'results_xgb')
+            # Utilisez get_model pour obtenir le modèle
+            model_xgb = get_model('xgb')
+            if model_xgb is not None:
+                train_and_evaluate_and_save(XGBClassifier, xgb_params, 'XGBoost', 'results_xgb')
 
 
 
@@ -1966,8 +1977,10 @@ ce qui démontre le poids de cette variable dans la modélisation prédictive.
                 'subsample': 0.8,
                 'random_state': 42
             }
-            #Appel de la fonction entrainement et sauvegarde
-            train_and_evaluate_and_save(LGBMClassifier, lgb_params, 'LightGBM', 'results_lgb')
+            # Utilisez get_model pour obtenir le modèle
+            model_lgb = get_model('lgb')
+            if model_lgb is not None:
+                train_and_evaluate_and_save(LGBMClassifier, lgb_params, 'LightGBM', 'results_lgb')
 
 
         if  button8:
